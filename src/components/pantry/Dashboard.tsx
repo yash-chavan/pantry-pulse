@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { ChefHat, Leaf, LogOut, Plus, TriangleAlert } from "lucide-react";
-import { daysLeft, freshnessOf, saveItems, type PantryItem } from "@/lib/pantry";
+import { toast } from "sonner";
+import { freshnessOf, saveItems, type PantryItem } from "@/lib/pantry";
 import { ItemCard } from "./ItemCard";
 import { AddItemModal } from "./AddItemModal";
 import { RecipeModal } from "./RecipeModal";
@@ -17,17 +18,19 @@ export function Dashboard({
   items,
   setItems,
   onSignOut,
+  onAddToShopping,
 }: {
   items: PantryItem[];
   setItems: (items: PantryItem[]) => void;
   onSignOut: () => void;
+  onAddToShopping: (item: PantryItem) => void;
 }) {
   const [tab, setTab] = useState<Tab>("urgent");
   const [addOpen, setAddOpen] = useState(false);
   const [recipeOpen, setRecipeOpen] = useState(false);
 
   const urgent = useMemo(
-    () => items.filter((i) => freshnessOf(i) === "urgent" && daysLeft(i) <= 2),
+    () => items.filter((i) => freshnessOf(i) === "urgent"),
     [items],
   );
   const expired = useMemo(() => items.filter((i) => freshnessOf(i) === "expired"), [items]);
@@ -46,8 +49,22 @@ export function Dashboard({
     saveItems(next);
   }
 
+  function removeItem(item: PantryItem, reason: "used" | "discarded") {
+    const next = items.filter((i) => i.id !== item.id);
+    setItems(next);
+    saveItems(next);
+    toast(`${item.name} ${reason === "used" ? "used" : "discarded"}. Add to Shopping List?`, {
+      position: "bottom-center",
+      action: {
+        label: "Add to List",
+        onClick: () => onAddToShopping(item),
+      },
+      cancel: { label: "Dismiss", onClick: () => {} },
+    });
+  }
+
   return (
-    <div className="app-gradient min-h-screen pb-28">
+    <div className="app-gradient min-h-screen pb-40">
       <header className="flex items-center justify-between px-5 pt-6">
         <div className="flex items-center gap-3">
           <span className="grid h-10 w-10 place-items-center rounded-2xl bg-primary text-primary-foreground">
@@ -128,11 +145,11 @@ export function Dashboard({
             Nothing here right now.
           </div>
         ) : (
-          visible.map((item) => <ItemCard key={item.id} item={item} />)
+          visible.map((item) => <ItemCard key={item.id} item={item} onRemove={removeItem} />)
         )}
       </section>
 
-      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 mx-auto flex max-w-[480px] justify-end p-5">
+      <div className="pointer-events-none fixed inset-x-0 bottom-16 z-40 mx-auto flex max-w-[480px] justify-end p-5">
         <button
           onClick={() => setAddOpen(true)}
           aria-label="Add item"

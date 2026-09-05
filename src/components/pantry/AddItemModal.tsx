@@ -7,10 +7,12 @@ export function AddItemModal({
   open,
   onClose,
   onSave,
+  mode = "pantry",
 }: {
   open: boolean;
   onClose: () => void;
   onSave: (item: PantryItem) => void;
+  mode?: "pantry" | "shopping";
 }) {
   const [name, setName] = useState("");
   const [category, setCategory] = useState<Category>("Produce");
@@ -40,7 +42,11 @@ export function AddItemModal({
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="Add to pantry">
+    <Modal
+      open={open}
+      onClose={onClose}
+      title={mode === "shopping" ? "Add to shopping list" : "Add to pantry"}
+    >
       <input
         ref={fileRef}
         type="file"
@@ -95,6 +101,7 @@ export function AddItemModal({
           </select>
         </label>
 
+        {mode === "pantry" && (
         <div>
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-muted-foreground">Expires in</span>
@@ -116,6 +123,7 @@ export function AddItemModal({
             className="mt-2 w-full rounded-2xl border border-input bg-background px-4 py-3 text-sm text-foreground outline-none focus:border-ring"
           />
         </div>
+        )}
       </div>
 
       <button
@@ -123,7 +131,7 @@ export function AddItemModal({
         disabled={!name.trim()}
         className="mt-6 w-full rounded-2xl bg-foreground px-5 py-4 text-[0.95rem] font-semibold text-background transition active:scale-[0.98] disabled:opacity-40"
       >
-        Save to Pantry
+        {mode === "shopping" ? "Add to Shopping List" : "Save to Pantry"}
       </button>
     </Modal>
   );
