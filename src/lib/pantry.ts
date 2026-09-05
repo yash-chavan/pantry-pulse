@@ -35,7 +35,7 @@ export type Freshness = "urgent" | "warning" | "fresh" | "expired";
 export function freshnessOf(item: PantryItem): Freshness {
   const d = daysLeft(item);
   if (d < 0) return "expired";
-  if (d <= 2) return "urgent";
+  if (d <= 3) return "urgent";
   if (d <= 7) return "warning";
   return "fresh";
 }

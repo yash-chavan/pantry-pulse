@@ -27,7 +27,7 @@ export function Dashboard({
   const [recipeOpen, setRecipeOpen] = useState(false);
 
   const urgent = useMemo(
-    () => items.filter((i) => freshnessOf(i) === "urgent" && daysLeft(i) <= 2),
+    () => items.filter((i) => freshnessOf(i) === "urgent"),
     [items],
   );
   const expired = useMemo(() => items.filter((i) => freshnessOf(i) === "expired"), [items]);
