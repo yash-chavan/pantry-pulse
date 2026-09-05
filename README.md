@@ -3,7 +3,7 @@
 > **Interactive Prototype**  
 > A mobile-first web application designed to track pantry inventory, prioritize expiring ingredients, and streamline restocking.
 
-🔗 **Live Prototype:** https://pantry-pulse.vercel.app  
+🔗 **Live Prototype:** https://pantry-pulse-seven.vercel.app/  
 👤 **Builder:** Yash Chavan  
 
 ---
