@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { ChefHat, Leaf, LogOut, Plus, TriangleAlert } from "lucide-react";
-import { daysLeft, freshnessOf, saveItems, type PantryItem } from "@/lib/pantry";
+import { toast } from "sonner";
+import { freshnessOf, saveItems, type PantryItem } from "@/lib/pantry";
 import { ItemCard } from "./ItemCard";
 import { AddItemModal } from "./AddItemModal";
 import { RecipeModal } from "./RecipeModal";
@@ -17,10 +18,12 @@ export function Dashboard({
   items,
   setItems,
   onSignOut,
+  onAddToShopping,
 }: {
   items: PantryItem[];
   setItems: (items: PantryItem[]) => void;
   onSignOut: () => void;
+  onAddToShopping: (item: PantryItem) => void;
 }) {
   const [tab, setTab] = useState<Tab>("urgent");
   const [addOpen, setAddOpen] = useState(false);
@@ -44,6 +47,20 @@ export function Dashboard({
     const next = [item, ...items];
     setItems(next);
     saveItems(next);
+  }
+
+  function removeItem(item: PantryItem, reason: "used" | "discarded") {
+    const next = items.filter((i) => i.id !== item.id);
+    setItems(next);
+    saveItems(next);
+    toast(`${item.name} ${reason === "used" ? "used" : "discarded"}. Add to Shopping List?`, {
+      position: "bottom-center",
+      action: {
+        label: "Add to List",
+        onClick: () => onAddToShopping(item),
+      },
+      cancel: { label: "Dismiss", onClick: () => {} },
+    });
   }
 
   return (
@@ -128,7 +145,7 @@ export function Dashboard({
             Nothing here right now.
           </div>
         ) : (
-          visible.map((item) => <ItemCard key={item.id} item={item} />)
+          visible.map((item) => <ItemCard key={item.id} item={item} onRemove={removeItem} />)
         )}
       </section>
 
