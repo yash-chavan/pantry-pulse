@@ -91,9 +91,12 @@ export function makeItem(
 export function seedItems(): PantryItem[] {
   return [
     makeItem("Tomatoes", "Produce", 1, 7),
-    makeItem("Pasta Sauce", "Canned Goods", 2, 14),
-    makeItem("Olive Oil", "Oils & Spices", 60, 120),
-    makeItem("Whole Wheat Bread", "Grains", -1, 7),
+    makeItem("Whole Milk", "Dairy & Alternatives", 2, 10),
+    makeItem("Pasta Sauce", "Canned Goods", 3, 14),
+    makeItem("Spinach", "Produce", 4, 8),
+    makeItem("Eggs", "Dairy & Alternatives", 8, 21),
+    makeItem("Potato", "Produce", 10, 30),
+    makeItem("Olive Oil", "Oils & Spices", 180, 365),
   ];
 }
 
@@ -161,4 +164,43 @@ export function buildRescueRecipe(items: PantryItem[]): Recipe {
       "Taste, adjust seasoning, and serve hot with bread or rice. Nothing wasted.",
     ],
   };
+}
+
+/* ---------- Shopping list ---------- */
+
+export type ShoppingItem = {
+  id: string;
+  name: string;
+  category: Category;
+  qty: number;
+};
+
+export const SHOPPING_KEY = "pantrypulse.shopping";
+
+export function makeShoppingItem(name: string, category: Category, qty = 1): ShoppingItem {
+  return {
+    id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    name,
+    category,
+    qty,
+  };
+}
+
+export function loadShopping(): ShoppingItem[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(SHOPPING_KEY);
+    return raw ? (JSON.parse(raw) as ShoppingItem[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveShopping(items: ShoppingItem[]) {
+  window.localStorage.setItem(SHOPPING_KEY, JSON.stringify(items));
+}
+
+export function formatShoppingList(items: ShoppingItem[]): string {
+  if (!items.length) return "🛒 PantryPulse List:\n(empty)";
+  return `🛒 PantryPulse List:\n${items.map((i) => `- ${i.qty}x ${i.name}`).join("\n")}`;
 }
