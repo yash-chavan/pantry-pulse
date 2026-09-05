@@ -86,6 +86,7 @@ export function AddItemModal({
           />
         </label>
 
+        {mode === "pantry" && (
         <label className="block">
           <span className="text-xs font-semibold text-muted-foreground">Category</span>
           <select
