@@ -2,7 +2,7 @@
 
 > A smart B2C pantry management web application built to eliminate household food waste through expiration intelligence, rescue recipes, and closed-loop restocking workflows.
 
-🔗 **Live Prototype:** [Insert Your Vercel Link Here]  
+🔗 **Live Prototype:** https://pantry-pulse-seven.vercel.app/  
 📄 **Product Manager:** Yash Chavan
 
 ---
