@@ -1,4 +1,10 @@
-import { Recycle } from "lucide-react";
+import { MoreVertical, Recycle, CircleCheck, Trash2 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   DISPOSAL_GUIDE,
   FRESHNESS_STYLES,
@@ -8,7 +14,13 @@ import {
   type PantryItem,
 } from "@/lib/pantry";
 
-export function ItemCard({ item }: { item: PantryItem }) {
+export function ItemCard({
+  item,
+  onRemove,
+}: {
+  item: PantryItem;
+  onRemove?: (item: PantryItem, reason: "used" | "discarded") => void;
+}) {
   const fresh = freshnessOf(item);
   const style = FRESHNESS_STYLES[fresh];
   const d = daysLeft(item);
@@ -32,9 +44,37 @@ export function ItemCard({ item }: { item: PantryItem }) {
             {item.category}
           </span>
         </div>
-        <span className={`rounded-full px-2.5 py-1 text-[0.7rem] font-semibold ${style.chip}`}>
-          {countdown}
-        </span>
+        <div className="flex shrink-0 items-center gap-1.5">
+          <span className={`rounded-full px-2.5 py-1 text-[0.7rem] font-semibold ${style.chip}`}>
+            {countdown}
+          </span>
+          {onRemove && (
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                aria-label={`Actions for ${item.name}`}
+                className="grid h-8 w-8 place-items-center rounded-full text-muted-foreground transition hover:bg-muted active:scale-95"
+              >
+                <MoreVertical className="h-4 w-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="rounded-2xl">
+                <DropdownMenuItem
+                  onClick={() => onRemove(item, "used")}
+                  className="gap-2 font-semibold text-fresh focus:text-fresh"
+                >
+                  <CircleCheck className="h-4 w-4" />
+                  Mark as Used
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => onRemove(item, "discarded")}
+                  className="gap-2 font-semibold text-urgent focus:text-urgent"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Mark as Discarded
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </div>
       </div>
 
       <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-muted">
