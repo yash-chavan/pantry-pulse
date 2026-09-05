@@ -101,6 +101,7 @@ export function AddItemModal({
             ))}
           </select>
         </label>
+        )}
 
         {mode === "pantry" && (
         <div>
