@@ -6,9 +6,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  DISPOSAL_GUIDE,
   FRESHNESS_STYLES,
   daysLeft,
+  disposalFor,
   freshnessOf,
   progressPercent,
   type PantryItem,
@@ -24,7 +24,7 @@ export function ItemCard({
   const fresh = freshnessOf(item);
   const style = FRESHNESS_STYLES[fresh];
   const d = daysLeft(item);
-  const disposal = DISPOSAL_GUIDE[item.category];
+  const disposal = disposalFor(item);
 
   const countdown =
     d < 0

@@ -144,6 +144,24 @@ export const DISPOSAL_GUIDE: Record<Category, { badge: string; steps: string }> 
   },
 };
 
+// Item-specific disposal overrides keyed by lowercase item name. Falls back to
+// the category-level guide for anything not listed here.
+export const ITEM_DISPOSAL: Record<string, { badge: string; steps: string }> = {
+  cereal: {
+    badge: "Compost / Recyclable",
+    steps: "Compost cereal grains. Recycle the inner plastic pouch and outer cardboard box separately.",
+  },
+  "chili flakes": {
+    badge: "Dry Waste",
+    steps: "Dispose of dried spices in organic waste or trash. Rinse and recycle the glass bottle or shaker container.",
+  },
+};
+
+export function disposalFor(item: PantryItem): { badge: string; steps: string } {
+  const specific = ITEM_DISPOSAL[item.name.toLowerCase()];
+  return specific ?? DISPOSAL_GUIDE[item.category];
+}
+
 export type Recipe = { title: string; time: string; steps: string[] };
 
 export function buildRescueRecipe(items: PantryItem[]): Recipe {
