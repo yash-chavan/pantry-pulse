@@ -53,7 +53,7 @@ export function ShoppingList({
   }
 
   return (
-    <div className="app-gradient min-h-screen pb-28">
+    <div className="app-gradient min-h-screen pb-32">
       <header className="flex items-center justify-between px-5 pt-6">
         <div>
           <p className="text-[0.7rem] font-medium text-muted-foreground">Plan your restock</p>

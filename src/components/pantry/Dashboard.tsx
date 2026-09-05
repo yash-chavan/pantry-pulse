@@ -64,7 +64,7 @@ export function Dashboard({
   }
 
   return (
-    <div className="app-gradient min-h-screen pb-28">
+    <div className="app-gradient min-h-screen pb-40">
       <header className="flex items-center justify-between px-5 pt-6">
         <div className="flex items-center gap-3">
           <span className="grid h-10 w-10 place-items-center rounded-2xl bg-primary text-primary-foreground">
@@ -149,7 +149,7 @@ export function Dashboard({
         )}
       </section>
 
-      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 mx-auto flex max-w-[480px] justify-end p-5">
+      <div className="pointer-events-none fixed inset-x-0 bottom-16 z-40 mx-auto flex max-w-[480px] justify-end p-5">
         <button
           onClick={() => setAddOpen(true)}
           aria-label="Add item"
