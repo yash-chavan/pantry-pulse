@@ -53,7 +53,7 @@ export function Dashboard({
     const next = items.filter((i) => i.id !== item.id);
     setItems(next);
     saveItems(next);
-    toast(`${item.name} ${reason === "used" ? "used" : "discarded"}. Add to Shopping List?`, {
+    toast(`${item.name} removed. Add to Shopping List?`, {
       position: "bottom-center",
       action: {
         label: "Add to List",

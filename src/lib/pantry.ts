@@ -21,7 +21,7 @@ export type PantryItem = {
   totalDays: number; // shelf life at time of adding
 };
 
-export const ITEMS_KEY = "pantrypulse.items";
+export const ITEMS_KEY = "pantrypulse.items.v2";
 export const SESSION_KEY = "pantrypulse.session";
 
 const DAY = 86_400_000;
@@ -97,6 +97,8 @@ export function seedItems(): PantryItem[] {
     makeItem("Eggs", "Dairy & Alternatives", 8, 21),
     makeItem("Potato", "Produce", 10, 30),
     makeItem("Olive Oil", "Oils & Spices", 180, 365),
+    makeItem("Cereal", "Grains", -2, 60),
+    makeItem("Chili Flakes", "Oils & Spices", -5, 365),
   ];
 }
 
