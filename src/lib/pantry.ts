@@ -73,22 +73,27 @@ export function progressPercent(item: PantryItem): number {
   return Math.min(100, Math.max(6, ((total - d) / total) * 100));
 }
 
-export function makeItem(name: string, category: Category, days: number): PantryItem {
+export function makeItem(
+  name: string,
+  category: Category,
+  days: number,
+  shelfLife?: number,
+): PantryItem {
   return {
     id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     name,
     category,
     expiresAt: Date.now() + days * DAY,
-    totalDays: Math.max(Math.abs(days), 1),
+    totalDays: Math.max(shelfLife ?? Math.abs(days), 1),
   };
 }
 
 export function seedItems(): PantryItem[] {
   return [
-    makeItem("Tomatoes", "Produce", 1),
-    makeItem("Pasta Sauce", "Canned Goods", 2),
-    makeItem("Olive Oil", "Oils & Spices", 60),
-    makeItem("Whole Wheat Bread", "Grains", -1),
+    makeItem("Tomatoes", "Produce", 1, 7),
+    makeItem("Pasta Sauce", "Canned Goods", 2, 14),
+    makeItem("Olive Oil", "Oils & Spices", 60, 120),
+    makeItem("Whole Wheat Bread", "Grains", -1, 7),
   ];
 }
 
