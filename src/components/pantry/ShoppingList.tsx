@@ -1,12 +1,6 @@
-import { useMemo, useState } from "react";
-import { Camera, ChevronDown, Minus, Plus, Share2 } from "lucide-react";
-import {
-  CATEGORIES,
-  makeShoppingItem,
-  type Category,
-  type PantryItem,
-  type ShoppingItem,
-} from "@/lib/pantry";
+import { useState } from "react";
+import { Camera, Minus, Plus, Share2 } from "lucide-react";
+import { makeShoppingItem, type PantryItem, type ShoppingItem } from "@/lib/pantry";
 import { AddItemModal } from "./AddItemModal";
 import { ShareModal } from "./ShareModal";
 
@@ -20,27 +14,15 @@ export function ShoppingList({
   const [name, setName] = useState("");
   const [scanOpen, setScanOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
-  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
 
-  const grouped = useMemo(
-    () =>
-      CATEGORIES.map((c) => ({
-        category: c,
-        entries: items.filter((i) => i.category === c),
-      })).filter((g) => g.entries.length > 0),
-    [items],
-  );
-
-  function add(itemName: string, category: Category) {
+  function add(itemName: string) {
     const trimmed = itemName.trim();
     if (!trimmed) return;
-    const existing = items.find(
-      (i) => i.name.toLowerCase() === trimmed.toLowerCase() && i.category === category,
-    );
+    const existing = items.find((i) => i.name.toLowerCase() === trimmed.toLowerCase());
     setItems(
       existing
         ? items.map((i) => (i.id === existing.id ? { ...i, qty: i.qty + 1 } : i))
-        : [...items, makeShoppingItem(trimmed, category)],
+        : [...items, makeShoppingItem(trimmed, "Produce")],
     );
   }
 
@@ -76,7 +58,7 @@ export function ShoppingList({
               onChange={(e) => setName(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  add(name, "Produce");
+                  add(name);
                   setName("");
                 }
               }}
@@ -85,7 +67,7 @@ export function ShoppingList({
             />
             <button
               onClick={() => {
-                add(name, "Produce");
+                add(name);
                 setName("");
               }}
               disabled={!name.trim()}
@@ -105,65 +87,36 @@ export function ShoppingList({
       </section>
 
       <section className="mt-4 space-y-3 px-5">
-        {grouped.length === 0 ? (
+        {items.length === 0 ? (
           <div className="card-soft px-5 py-10 text-center text-sm text-muted-foreground">
             Your shopping list is empty.
           </div>
         ) : (
-          grouped.map((group) => {
-            const isOpen = !collapsed[group.category];
-            return (
-              <div key={group.category} className="card-soft overflow-hidden">
+          items.map((i) => (
+            <div
+              key={i.id}
+              className="card-soft flex items-center justify-between gap-3 px-4 py-3.5"
+            >
+              <span className="text-sm font-semibold text-foreground">{i.name}</span>
+              <div className="flex items-center gap-2">
                 <button
-                  onClick={() =>
-                    setCollapsed((c) => ({ ...c, [group.category]: !collapsed[group.category] }))
-                  }
-                  className="flex w-full items-center justify-between px-4 py-3.5"
+                  onClick={() => step(i.id, -1)}
+                  aria-label={`Decrease ${i.name}`}
+                  className="grid h-8 w-8 place-items-center rounded-full border border-border bg-card text-foreground transition active:scale-95"
                 >
-                  <span className="text-sm font-bold tracking-tight text-foreground">
-                    {group.category}
-                    <span className="ml-2 text-xs font-medium text-muted-foreground">
-                      {group.entries.length}
-                    </span>
-                  </span>
-                  <ChevronDown
-                    className={`h-4 w-4 text-muted-foreground transition ${isOpen ? "" : "-rotate-90"}`}
-                  />
+                  <Minus className="h-3.5 w-3.5" />
                 </button>
-                {isOpen && (
-                  <div className="space-y-2 px-3 pb-3">
-                    {group.entries.map((i) => (
-                      <div
-                        key={i.id}
-                        className="flex items-center justify-between gap-3 rounded-2xl bg-secondary/60 px-4 py-3"
-                      >
-                        <span className="text-sm font-semibold text-foreground">{i.name}</span>
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => step(i.id, -1)}
-                            aria-label={`Decrease ${i.name}`}
-                            className="grid h-8 w-8 place-items-center rounded-full border border-border bg-card text-foreground transition active:scale-95"
-                          >
-                            <Minus className="h-3.5 w-3.5" />
-                          </button>
-                          <span className="w-5 text-center text-sm font-bold text-foreground">
-                            {i.qty}
-                          </span>
-                          <button
-                            onClick={() => step(i.id, 1)}
-                            aria-label={`Increase ${i.name}`}
-                            className="grid h-8 w-8 place-items-center rounded-full bg-primary text-primary-foreground transition active:scale-95"
-                          >
-                            <Plus className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <span className="w-5 text-center text-sm font-bold text-foreground">{i.qty}</span>
+                <button
+                  onClick={() => step(i.id, 1)}
+                  aria-label={`Increase ${i.name}`}
+                  className="grid h-8 w-8 place-items-center rounded-full bg-primary text-primary-foreground transition active:scale-95"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                </button>
               </div>
-            );
-          })
+            </div>
+          ))
         )}
       </section>
 
@@ -171,7 +124,7 @@ export function ShoppingList({
         open={scanOpen}
         onClose={() => setScanOpen(false)}
         mode="shopping"
-        onSave={(item: PantryItem) => add(item.name, item.category)}
+        onSave={(item: PantryItem) => add(item.name)}
       />
       <ShareModal open={shareOpen} onClose={() => setShareOpen(false)} items={items} />
     </div>
